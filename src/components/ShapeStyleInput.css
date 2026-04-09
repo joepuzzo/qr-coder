@@ -1,0 +1,55 @@
+.shape-style-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.shape-style-input__label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-heading);
+}
+
+.shape-style-input__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.shape-style-input__option {
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.shape-style-input__option:hover {
+  border-color: var(--border-strong);
+  color: var(--text-heading);
+}
+
+.shape-style-input__option:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.shape-style-input__option--selected {
+  border-color: var(--accent);
+  background: var(--accent-muted);
+  color: var(--text-heading);
+}
+
+.shape-style-input__error {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--danger);
+}

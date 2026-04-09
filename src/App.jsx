@@ -5,6 +5,7 @@ import { ShapeStyleInput } from "./components/ShapeStyleInput.jsx";
 import { LogoUploadInput } from "./components/LogoUploadInput.jsx";
 import { QrPreview } from "./components/QrPreview.jsx";
 import { ShareLinkButton } from "./components/ShareLinkButton.jsx";
+import { QrColorInput } from "./components/QrColorInput.jsx";
 import { getFormInitialValuesFromSearch } from "./urlFormParams.js";
 import "./App.css";
 
@@ -40,6 +41,7 @@ export default function App() {
               placeholder="https://example.com or example.com"
             />
             <ShapeStyleInput name="shapeStyle" label="Shape style" />
+            <QrColorInput name="qrColor" label="QR color" />
             <LogoUploadInput name="logo" label="Center logo (optional)" />
           </section>
           <section className="panel panel--preview" aria-label="QR preview">

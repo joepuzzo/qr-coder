@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import QRCodeStyling from "qr-code-styling";
 import { useFieldState } from "informed";
 import { getShapeStyleOrDefault } from "../shapeStyles";
+import { normalizeQrColor } from "../qrColor.js";
 import "./QrPreview.css";
 
 function normalizeUrl(raw) {
@@ -20,9 +21,15 @@ const QR_SIZE = 340;
 /** PNG export — larger canvas for sharper downloads. */
 const DOWNLOAD_PNG_SIZE = 1024;
 
-function buildQrStylingOptions({ size, data, shapeStyleId, logoDataUrl }) {
+function buildQrStylingOptions({
+  size,
+  data,
+  shapeStyleId,
+  logoDataUrl,
+  qrColor,
+}) {
   const preset = getShapeStyleOrDefault(shapeStyleId ?? "rounded");
-  const fg = "#0f172a";
+  const fg = normalizeQrColor(qrColor);
   const bg = "#ffffff";
   const hasLogo =
     typeof logoDataUrl === "string" && logoDataUrl.trim().length > 0;
@@ -72,6 +79,7 @@ export function QrPreview() {
   const { value: link } = useFieldState("link");
   const { value: shapeStyleId } = useFieldState("shapeStyle");
   const { value: logoDataUrl } = useFieldState("logo");
+  const { value: qrColor } = useFieldState("qrColor");
 
   const containerRef = useRef(null);
   const qrRef = useRef(null);
@@ -93,6 +101,7 @@ export function QrPreview() {
       data,
       shapeStyleId,
       logoDataUrl,
+      qrColor,
     });
 
     el.innerHTML = "";
@@ -100,7 +109,7 @@ export function QrPreview() {
     const qr = new QRCodeStyling(base);
     qr.append(el);
     qrRef.current = qr;
-  }, [data, shapeStyleId, logoDataUrl]);
+  }, [data, shapeStyleId, logoDataUrl, qrColor]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -118,6 +127,7 @@ export function QrPreview() {
         data,
         shapeStyleId,
         logoDataUrl,
+        qrColor,
       }),
     );
     void exportQr.download({ name: "qr-code", extension: "png" });

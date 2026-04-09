@@ -1,0 +1,65 @@
+.qr-color-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.qr-color-input__label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-heading);
+}
+
+.qr-color-input__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.qr-color-input__swatch {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  background: var(--bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.qr-color-input__swatch::-webkit-color-swatch-wrapper {
+  padding: 4px;
+}
+
+.qr-color-input__swatch::-webkit-color-swatch {
+  border: none;
+  border-radius: 6px;
+}
+
+.qr-color-input__swatch::-moz-color-swatch {
+  border: none;
+  border-radius: 6px;
+}
+
+.qr-color-input__swatch:hover {
+  border-color: var(--border-strong);
+}
+
+.qr-color-input__swatch:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.qr-color-input__hex {
+  font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  user-select: all;
+}
+
+.qr-color-input__error {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--danger);
+}

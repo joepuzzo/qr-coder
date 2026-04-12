@@ -1,20 +1,10 @@
 import { useEffect, useRef } from "react";
 import QRCodeStyling from "qr-code-styling";
-import { useFieldState } from "informed";
+import { useFormState } from "informed";
 import { getShapeStyleOrDefault } from "../shapeStyles";
 import { normalizeQrColor } from "../qrColor.js";
+import { buildQrPayload } from "../buildQrPayload.js";
 import "./QrPreview.css";
-
-function normalizeUrl(raw) {
-  const t = String(raw ?? "").trim();
-  if (!t) return "";
-  try {
-    const u = new URL(t.includes("://") ? t : `https://${t}`);
-    return u.href;
-  } catch {
-    return "";
-  }
-}
 
 /** On-screen preview size (CSS scales the SVG). */
 const QR_SIZE = 340;
@@ -76,15 +66,14 @@ function buildQrStylingOptions({
 }
 
 export function QrPreview() {
-  const { value: link } = useFieldState("link");
-  const { value: shapeStyleId } = useFieldState("shapeStyle");
-  const { value: logoDataUrl } = useFieldState("logo");
-  const { value: qrColor } = useFieldState("qrColor");
+  const { values } = useFormState();
+  const data = buildQrPayload(values);
+  const shapeStyleId = values.shapeStyle;
+  const logoDataUrl = values.logo;
+  const qrColor = values.qrColor;
 
   const containerRef = useRef(null);
   const qrRef = useRef(null);
-
-  const data = normalizeUrl(link ?? "");
 
   useEffect(() => {
     const el = containerRef.current;
@@ -103,6 +92,8 @@ export function QrPreview() {
       logoDataUrl,
       qrColor,
     });
+
+    // console.log("base", base);
 
     el.innerHTML = "";
     qrRef.current = null;
@@ -139,7 +130,7 @@ export function QrPreview() {
       <div className="qr-preview__frame">
         {!data ? (
           <p className="qr-preview__placeholder">
-            Enter a valid link above to generate a QR code.
+            Fill in the fields for the selected type to generate a QR code.
           </p>
         ) : null}
         <div ref={containerRef} className="qr-preview__canvas" hidden={!data} />

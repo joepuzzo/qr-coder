@@ -65,12 +65,13 @@ function buildVcardPayload(values) {
 
   const street = String(values?.vcardAddress ?? "").trim();
   const city = String(values?.vcardCity ?? "").trim();
+  const state = String(values?.vcardState ?? "").trim();
   const postal = String(values?.vcardPostalCode ?? "").trim();
   const country = String(values?.vcardCountry ?? "").trim();
-  if (street || city || postal || country) {
+  if (street || city || state || postal || country) {
     // ADR: PO Box;Extended;Street;City;Region;Postal;Country (vCard 3.0)
     lines.push(
-      `ADR:;;${escapeVcardText(street)};${escapeVcardText(city)};;${escapeVcardText(postal)};${escapeVcardText(country)}`,
+      `ADR:;;${escapeVcardText(street)};${escapeVcardText(city)};${escapeVcardText(state)};${escapeVcardText(postal)};${escapeVcardText(country)}`,
     );
   }
 

@@ -211,6 +211,15 @@ export function PayloadFields() {
             </div>
             <div className="payload-fields__cell">
               <Input
+                name="vcardState"
+                label="State / province"
+                type="text"
+                autoComplete="address-level1"
+                placeholder="Optional"
+              />
+            </div>
+            <div className="payload-fields__cell">
+              <Input
                 name="vcardPostalCode"
                 label="Postal code"
                 type="text"
@@ -218,15 +227,15 @@ export function PayloadFields() {
                 placeholder="Optional"
               />
             </div>
-            <div className="payload-fields__cell">
-              <Input
-                name="vcardCountry"
-                label="Country"
-                type="text"
-                autoComplete="country-name"
-                placeholder="Optional"
-              />
-            </div>
+          </div>
+          <div className="payload-fields__row payload-fields__row--full">
+            <Input
+              name="vcardCountry"
+              label="Country"
+              type="text"
+              autoComplete="country-name"
+              placeholder="Optional"
+            />
           </div>
           <div className="payload-fields__row payload-fields__row--full">
             <Input

@@ -93,6 +93,7 @@ export function QrPreview() {
       qrColor,
     });
 
+    // Leave this here for debugging but commented out
     // console.log("base", base);
 
     el.innerHTML = "";

@@ -4,6 +4,7 @@ export const PAYLOAD_TYPES = [
   { id: 'phone', label: 'Phone' },
   { id: 'sms', label: 'SMS' },
   { id: 'wifi', label: 'WiFi' },
+  { id: 'vcard', label: 'vCard' },
 ]
 
 export const DEFAULT_PAYLOAD_TYPE = 'link'

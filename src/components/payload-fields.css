@@ -12,6 +12,36 @@
   width: 100%;
 }
 
+.payload-fields__row {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.payload-fields__row--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.payload-fields__row--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.payload-fields__row--full {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.payload-fields__cell {
+  min-width: 0;
+}
+
+@media (max-width: 520px) {
+  .payload-fields__stack--vcard .payload-fields__row--2,
+  .payload-fields__stack--vcard .payload-fields__row--3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* Style informed Input / TextArea / Select / Checkbox like link field */
 .payload-fields label {
   display: block;
@@ -21,7 +51,7 @@
   margin-bottom: 0.35rem;
 }
 
-.payload-fields input:not([type='checkbox']),
+.payload-fields input:not([type="checkbox"]),
 .payload-fields textarea,
 .payload-fields select {
   font: inherit;
@@ -46,13 +76,13 @@
   cursor: pointer;
 }
 
-.payload-fields input:not([type='checkbox']):hover,
+.payload-fields input:not([type="checkbox"]):hover,
 .payload-fields textarea:hover,
 .payload-fields select:hover {
   border-color: var(--border-strong);
 }
 
-.payload-fields input:not([type='checkbox']):focus,
+.payload-fields input:not([type="checkbox"]):focus,
 .payload-fields textarea:focus,
 .payload-fields select:focus {
   outline: none;
@@ -60,7 +90,7 @@
   box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
-.payload-fields input[type='checkbox'] {
+.payload-fields input[type="checkbox"] {
   width: 1.1rem;
   height: 1.1rem;
   margin-right: 0.5rem;
@@ -69,7 +99,7 @@
   accent-color: var(--accent);
 }
 
-.payload-fields small[role='alert'] {
+.payload-fields small[role="alert"] {
   display: block;
   margin-top: 0.25rem;
   font-size: 0.8125rem;

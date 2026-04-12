@@ -21,6 +21,18 @@ const DEFAULTS = {
   wifiPassword: '',
   wifiEncryption: 'WPA',
   wifiHidden: false,
+  vcardFirstName: '',
+  vcardLastName: '',
+  vcardTel: '',
+  vcardEmail: '',
+  vcardOrg: '',
+  vcardTitle: '',
+  vcardAddress: '',
+  vcardCity: '',
+  vcardPostalCode: '',
+  vcardCountry: '',
+  vcardUrl: '',
+  vcardNote: '',
   shapeStyle: 'rounded',
   logo: '',
   qrColor: DEFAULT_QR_COLOR,
@@ -72,6 +84,31 @@ export function getFormInitialValuesFromSearch(search) {
     wifiPassword: (params.get('wifiPass') ?? '').trim(),
     wifiEncryption,
     wifiHidden: params.get('wifiH') === '1',
+    ...(() => {
+      let vcardFirstName = (params.get('vcardFirst') ?? '').trim()
+      let vcardLastName = (params.get('vcardLast') ?? '').trim()
+      const legacyFn = (params.get('vcardFn') ?? '').trim()
+      if (!vcardFirstName && !vcardLastName && legacyFn) {
+        const i = legacyFn.indexOf(' ')
+        if (i === -1) {
+          vcardFirstName = legacyFn
+        } else {
+          vcardFirstName = legacyFn.slice(0, i).trim()
+          vcardLastName = legacyFn.slice(i + 1).trim()
+        }
+      }
+      return { vcardFirstName, vcardLastName }
+    })(),
+    vcardTel: (params.get('vcardTel') ?? '').trim(),
+    vcardEmail: (params.get('vcardEmail') ?? '').trim(),
+    vcardOrg: (params.get('vcardOrg') ?? '').trim(),
+    vcardTitle: (params.get('vcardTitle') ?? '').trim(),
+    vcardAddress: (params.get('vcardAddress') ?? '').trim(),
+    vcardCity: (params.get('vcardCity') ?? '').trim(),
+    vcardPostalCode: (params.get('vcardPostal') ?? '').trim(),
+    vcardCountry: (params.get('vcardCountry') ?? '').trim(),
+    vcardUrl: (params.get('vcardUrl') ?? '').trim(),
+    vcardNote: (params.get('vcardNote') ?? '').trim(),
     shapeStyle,
     qrColor,
   }
@@ -125,6 +162,33 @@ export function buildShareQueryString(values) {
         if (pass) params.set('wifiPass', pass)
       }
       if (values.wifiHidden) params.set('wifiH', '1')
+      break
+    }
+    case 'vcard': {
+      const first = String(values.vcardFirstName ?? '').trim()
+      if (first) params.set('vcardFirst', first)
+      const last = String(values.vcardLastName ?? '').trim()
+      if (last) params.set('vcardLast', last)
+      const tel = String(values.vcardTel ?? '').trim()
+      if (tel) params.set('vcardTel', tel)
+      const em = String(values.vcardEmail ?? '').trim()
+      if (em) params.set('vcardEmail', em)
+      const org = String(values.vcardOrg ?? '').trim()
+      if (org) params.set('vcardOrg', org)
+      const title = String(values.vcardTitle ?? '').trim()
+      if (title) params.set('vcardTitle', title)
+      const addr = String(values.vcardAddress ?? '').trim()
+      if (addr) params.set('vcardAddress', addr)
+      const city = String(values.vcardCity ?? '').trim()
+      if (city) params.set('vcardCity', city)
+      const postal = String(values.vcardPostalCode ?? '').trim()
+      if (postal) params.set('vcardPostal', postal)
+      const country = String(values.vcardCountry ?? '').trim()
+      if (country) params.set('vcardCountry', country)
+      const url = String(values.vcardUrl ?? '').trim()
+      if (url) params.set('vcardUrl', url)
+      const note = String(values.vcardNote ?? '').trim()
+      if (note) params.set('vcardNote', note)
       break
     }
     default:

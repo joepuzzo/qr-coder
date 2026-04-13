@@ -1,4 +1,16 @@
+import { getCountryCode } from "intl-phone";
 import { DEFAULT_PAYLOAD_TYPE } from "./payloadTypes.js";
+
+/** E.164-like string from informed phone field `{ country, number }`. */
+function e164FromPhoneValue(v) {
+  if (!v || typeof v !== "object") return "";
+  if (v.number == null) return "";
+  const national = String(v.number).replace(/\D/g, "");
+  if (national.length < 7) return "";
+  const cc = getCountryCode(v.country);
+  if (!cc) return "";
+  return `+${cc}${national}`;
+}
 
 function normalizeHttpUrl(raw) {
   const t = String(raw ?? "").trim();
@@ -45,8 +57,15 @@ function buildVcardPayload(values) {
     `N:${escapeVcardText(last)};${escapeVcardText(first)};;;`,
   ];
 
-  const tel = String(values?.vcardTel ?? "").trim();
-  if (tel) lines.push(`TEL:${escapeVcardText(tel)}`);
+  const telVal = values?.vcardTel;
+  let telLine = "";
+  if (telVal && typeof telVal === "object") {
+    telLine = e164FromPhoneValue(telVal);
+  } else {
+    const t = String(telVal ?? "").trim();
+    if (t) telLine = t;
+  }
+  if (telLine) lines.push(`TEL:${escapeVcardText(telLine)}`);
 
   const email = String(values?.vcardEmail ?? "").trim();
   if (email) lines.push(`EMAIL:${escapeVcardText(email)}`);
@@ -107,7 +126,12 @@ export function buildQrPayload(values) {
       return qs ? `mailto:${to}?${qs}` : `mailto:${to}`;
     }
     case "phone": {
-      const raw = String(values?.phoneNumber ?? "").trim();
+      const pv = values?.phoneNumber;
+      if (pv && typeof pv === "object") {
+        const e164 = e164FromPhoneValue(pv);
+        return e164 ? `tel:${e164}` : "";
+      }
+      const raw = String(pv ?? "").trim();
       if (!raw) return "";
       const compact = raw.replace(/[\s().-]/g, "");
       const digitsOnly = compact.replace(/\D/g, "");
@@ -115,11 +139,19 @@ export function buildQrPayload(values) {
       return `tel:${compact}`;
     }
     case "sms": {
-      const raw = String(values?.smsNumber ?? "").trim();
-      if (!raw) return "";
-      const num = raw.replace(/[\s().-]/g, "");
-      const digitsOnly = num.replace(/\D/g, "");
-      if (digitsOnly.length < 7) return "";
+      const sv = values?.smsNumber;
+      let num = "";
+      if (sv && typeof sv === "object") {
+        num = e164FromPhoneValue(sv);
+        if (!num) return "";
+      } else {
+        const raw = String(sv ?? "").trim();
+        if (!raw) return "";
+        const n = raw.replace(/[\s().-]/g, "");
+        const digitsOnly = n.replace(/\D/g, "");
+        if (digitsOnly.length < 7) return "";
+        num = n;
+      }
       const body = String(values?.smsBody ?? "");
       if (body) {
         return `sms:${num}?body=${encodeURIComponent(body)}`;

@@ -5,6 +5,7 @@ import {
   PAYLOAD_IDS,
   WIFI_ENC_IDS,
 } from "./payloadTypes.js";
+import { isPhoneCountryEnabled } from "./phoneCountries.js";
 
 const SHAPE_IDS = new Set(SHAPE_STYLES.map((s) => s.id));
 
@@ -14,8 +15,8 @@ const DEFAULTS = {
   emailTo: "",
   emailSubject: "",
   emailBody: "",
-  phoneNumber: "",
-  smsNumber: "",
+  phoneNumber: { country: "US", number: "" },
+  smsNumber: { country: "US", number: "" },
   smsBody: "",
   wifiSsid: "",
   wifiPassword: "",
@@ -23,7 +24,7 @@ const DEFAULTS = {
   wifiHidden: false,
   vcardFirstName: "",
   vcardLastName: "",
-  vcardTel: "",
+  vcardTel: { country: "US", number: "" },
   vcardEmail: "",
   vcardOrg: "",
   vcardTitle: "",
@@ -82,8 +83,20 @@ export function getFormInitialValuesFromSearch(search) {
     emailTo: (params.get("emailTo") ?? "").trim(),
     emailSubject: (params.get("emailSubject") ?? "").trim(),
     emailBody: (params.get("emailBody") ?? "").trim(),
-    phoneNumber: (params.get("phone") ?? "").trim(),
-    smsNumber: (params.get("sms") ?? "").trim(),
+    phoneNumber: (() => {
+      const digits = (params.get("phone") ?? "").replace(/\D/g, "");
+      const pc = (params.get("phoneCountry") ?? "").trim().toUpperCase();
+      if (!digits && !pc) return DEFAULTS.phoneNumber;
+      const country = isPhoneCountryEnabled(pc) ? pc : "US";
+      return { country, number: digits };
+    })(),
+    smsNumber: (() => {
+      const digits = (params.get("sms") ?? "").replace(/\D/g, "");
+      const pc = (params.get("smsCountry") ?? "").trim().toUpperCase();
+      if (!digits && !pc) return DEFAULTS.smsNumber;
+      const country = isPhoneCountryEnabled(pc) ? pc : "US";
+      return { country, number: digits };
+    })(),
     smsBody: (params.get("smsBody") ?? "").trim(),
     wifiSsid: (params.get("wifiSsid") ?? "").trim(),
     wifiPassword: (params.get("wifiPass") ?? "").trim(),
@@ -104,7 +117,13 @@ export function getFormInitialValuesFromSearch(search) {
       }
       return { vcardFirstName, vcardLastName };
     })(),
-    vcardTel: (params.get("vcardTel") ?? "").trim(),
+    vcardTel: (() => {
+      const digits = (params.get("vcardTel") ?? "").replace(/\D/g, "");
+      const pc = (params.get("vcardTelCountry") ?? "").trim().toUpperCase();
+      if (!digits && !pc) return DEFAULTS.vcardTel;
+      const country = isPhoneCountryEnabled(pc) ? pc : "US";
+      return { country, number: digits };
+    })(),
     vcardEmail: (params.get("vcardEmail") ?? "").trim(),
     vcardOrg: (params.get("vcardOrg") ?? "").trim(),
     vcardTitle: (params.get("vcardTitle") ?? "").trim(),
@@ -147,13 +166,27 @@ export function buildShareQueryString(values) {
       break;
     }
     case "phone": {
-      const p = String(values.phoneNumber ?? "").trim();
-      if (p) params.set("phone", p);
+      const pn = values.phoneNumber;
+      if (pn && typeof pn === "object" && pn.number) {
+        params.set("phone", String(pn.number).replace(/\D/g, ""));
+        if (pn.country && pn.country !== "US") {
+          params.set("phoneCountry", pn.country);
+        }
+      } else if (typeof pn === "string" && pn.trim()) {
+        params.set("phone", pn.trim());
+      }
       break;
     }
     case "sms": {
-      const s = String(values.smsNumber ?? "").trim();
-      if (s) params.set("sms", s);
+      const sn = values.smsNumber;
+      if (sn && typeof sn === "object" && sn.number) {
+        params.set("sms", String(sn.number).replace(/\D/g, ""));
+        if (sn.country && sn.country !== "US") {
+          params.set("smsCountry", sn.country);
+        }
+      } else if (typeof sn === "string" && sn.trim()) {
+        params.set("sms", sn.trim());
+      }
       const body = String(values.smsBody ?? "").trim();
       if (body) params.set("smsBody", body);
       break;
@@ -175,8 +208,15 @@ export function buildShareQueryString(values) {
       if (first) params.set("vcardFirst", first);
       const last = String(values.vcardLastName ?? "").trim();
       if (last) params.set("vcardLast", last);
-      const tel = String(values.vcardTel ?? "").trim();
-      if (tel) params.set("vcardTel", tel);
+      const tel = values.vcardTel;
+      if (tel && typeof tel === "object" && tel.number) {
+        params.set("vcardTel", String(tel.number).replace(/\D/g, ""));
+        if (tel.country && tel.country !== "US") {
+          params.set("vcardTelCountry", tel.country);
+        }
+      } else if (typeof tel === "string" && tel.trim()) {
+        params.set("vcardTel", tel.trim());
+      }
       const em = String(values.vcardEmail ?? "").trim();
       if (em) params.set("vcardEmail", em);
       const org = String(values.vcardOrg ?? "").trim();

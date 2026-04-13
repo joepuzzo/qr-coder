@@ -51,9 +51,10 @@
   margin-bottom: 0.35rem;
 }
 
-.payload-fields input:not([type="checkbox"]),
+/* Exclude PhoneInput — it uses its own fused control + .phone-input__control border. */
+.payload-fields input:not([type="checkbox"]):not(.phone-input__field),
 .payload-fields textarea,
-.payload-fields select {
+.payload-fields select:not(.phone-input__leading) {
   font: inherit;
   font-size: 1rem;
   width: 100%;
@@ -76,15 +77,15 @@
   cursor: pointer;
 }
 
-.payload-fields input:not([type="checkbox"]):hover,
+.payload-fields input:not([type="checkbox"]):not(.phone-input__field):hover,
 .payload-fields textarea:hover,
-.payload-fields select:hover {
+.payload-fields select:not(.phone-input__leading):hover {
   border-color: var(--border-strong);
 }
 
-.payload-fields input:not([type="checkbox"]):focus,
+.payload-fields input:not([type="checkbox"]):not(.phone-input__field):focus,
 .payload-fields textarea:focus,
-.payload-fields select:focus {
+.payload-fields select:not(.phone-input__leading):focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--focus-ring);

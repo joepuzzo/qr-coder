@@ -1,5 +1,6 @@
 import { Relevant, Input, TextArea, Select, Checkbox, Debug } from "informed";
 import { LinkUrlInput } from "./LinkUrlInput.jsx";
+import { PhoneInput } from "./PhoneInput.jsx";
 import { WIFI_ENCRYPTION_OPTIONS } from "../payloadTypes.js";
 import "./payload-fields.css";
 
@@ -9,15 +10,6 @@ const wifiSelectOptions = WIFI_ENCRYPTION_OPTIONS.map((o) => ({
 }));
 
 export function PayloadFields() {
-  // const phoneFormatter = "1 ###-###-####";
-
-  // const phoneParser = (value) => {
-  //   return value.replace("1 ", "").replace(/-/g, "");
-  // };
-
-  const phoneFormatter = undefined;
-  const phoneParser = undefined;
-
   return (
     <div className="payload-fields">
       <Relevant
@@ -59,14 +51,10 @@ export function PayloadFields() {
       <Relevant
         when={({ formState }) => formState.values.payloadType === "phone"}
       >
-        <Input
+        <PhoneInput
           name="phoneNumber"
           label="Phone number"
-          type="tel"
-          autoComplete="tel"
-          placeholder="555-123-4567"
-          formatter={phoneFormatter}
-          parser={phoneParser}
+          required="Enter a phone number"
         />
       </Relevant>
 
@@ -74,14 +62,10 @@ export function PayloadFields() {
         when={({ formState }) => formState.values.payloadType === "sms"}
       >
         <div className="payload-fields__stack">
-          <Input
+          <PhoneInput
             name="smsNumber"
             label="Phone number"
-            type="tel"
-            autoComplete="tel"
-            placeholder="555-123-4567"
-            formatter={phoneFormatter}
-            parser={phoneParser}
+            required="Enter a phone number"
           />
           <TextArea
             name="smsBody"
@@ -148,27 +132,17 @@ export function PayloadFields() {
               />
             </div>
           </div>
-          <div className="payload-fields__row payload-fields__row--2">
-            <div className="payload-fields__cell">
-              <Input
-                name="vcardTel"
-                label="Phone"
-                type="tel"
-                autoComplete="tel"
-                placeholder="Optional"
-                formatter={phoneFormatter}
-                parser={phoneParser}
-              />
-            </div>
-            <div className="payload-fields__cell">
-              <Input
-                name="vcardEmail"
-                label="Email"
-                type="email"
-                autoComplete="email"
-                placeholder="Optional"
-              />
-            </div>
+          <div className="payload-fields__row payload-fields__row--full">
+            <PhoneInput name="vcardTel" label="Phone" />
+          </div>
+          <div className="payload-fields__row payload-fields__row--full">
+            <Input
+              name="vcardEmail"
+              label="Email"
+              type="email"
+              autoComplete="email"
+              placeholder="Optional"
+            />
           </div>
           <div className="payload-fields__row payload-fields__row--2">
             <div className="payload-fields__cell">

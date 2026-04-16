@@ -12,6 +12,7 @@ const SHAPE_IDS = new Set(SHAPE_STYLES.map((s) => s.id));
 const DEFAULTS = {
   payloadType: DEFAULT_PAYLOAD_TYPE,
   link: "",
+  plainText: "",
   emailTo: "",
   emailSubject: "",
   emailBody: "",
@@ -59,11 +60,15 @@ export function getFormInitialValuesFromSearch(search) {
   const colorRaw = (params.get("color") ?? "").trim();
   const payloadRaw = (params.get("payload") ?? "").trim();
 
+  const textRaw = (params.get("text") ?? "").trim();
+
   let payloadType = DEFAULT_PAYLOAD_TYPE;
   if (PAYLOAD_IDS.has(payloadRaw)) {
     payloadType = payloadRaw;
   } else if (!payloadRaw && linkRaw) {
     payloadType = "link";
+  } else if (!payloadRaw && textRaw) {
+    payloadType = "text";
   }
 
   const shapeStyle =
@@ -80,6 +85,7 @@ export function getFormInitialValuesFromSearch(search) {
     ...DEFAULTS,
     payloadType,
     link: linkRaw,
+    plainText: textRaw,
     emailTo: (params.get("emailTo") ?? "").trim(),
     emailSubject: (params.get("emailSubject") ?? "").trim(),
     emailBody: (params.get("emailBody") ?? "").trim(),
@@ -154,6 +160,11 @@ export function buildShareQueryString(values) {
     case "link": {
       const link = String(values.link ?? "").trim();
       if (link) params.set("link", link);
+      break;
+    }
+    case "text": {
+      const t = String(values.plainText ?? "").trim();
+      if (t) params.set("text", t);
       break;
     }
     case "email": {

@@ -61,7 +61,7 @@
   display: grid;
   gap: clamp(1.25rem, 3vw, 2rem);
   width: 100%;
-  max-width: 60rem;
+  max-width: 65rem;
   align-items: stretch;
   justify-items: stretch;
 }

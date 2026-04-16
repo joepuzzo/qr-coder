@@ -1,5 +1,6 @@
 export const PAYLOAD_TYPES = [
   { id: 'link', label: 'Link' },
+  { id: 'text', label: 'Text' },
   { id: 'email', label: 'Email' },
   { id: 'phone', label: 'Phone' },
   { id: 'sms', label: 'SMS' },

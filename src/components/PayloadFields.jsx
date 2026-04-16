@@ -23,6 +23,18 @@ export function PayloadFields() {
       </Relevant>
 
       <Relevant
+        when={({ formState }) => formState.values.payloadType === "text"}
+      >
+        <TextArea
+          name="plainText"
+          label="Text"
+          rows={5}
+          placeholder="Any plain text — not treated as a link"
+          autoComplete="off"
+        />
+      </Relevant>
+
+      <Relevant
         when={({ formState }) => formState.values.payloadType === "email"}
       >
         <div className="payload-fields__stack">

@@ -7,7 +7,7 @@ import { buildQrPayload } from "../buildQrPayload.js";
 import "./QrPreview.css";
 
 /** On-screen preview size (CSS scales the SVG). */
-const QR_SIZE = 340;
+const QR_SIZE = 400;
 /** PNG export — larger canvas for sharper downloads. */
 const DOWNLOAD_PNG_SIZE = 1024;
 
@@ -94,7 +94,7 @@ export function QrPreview() {
     });
 
     // Leave this here for debugging but commented out
-    // console.log("base", base);
+    console.log("base", base);
 
     el.innerHTML = "";
     qrRef.current = null;

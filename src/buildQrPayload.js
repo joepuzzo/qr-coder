@@ -112,6 +112,10 @@ export function buildQrPayload(values) {
     case "link": {
       return normalizeHttpUrl(values?.link);
     }
+    case "text": {
+      const t = String(values?.plainText ?? "").trim();
+      return t;
+    }
     case "email": {
       const to = String(values?.emailTo ?? "").trim();
       if (!to || !to.includes("@")) return "";

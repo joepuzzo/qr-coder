@@ -1,6 +1,7 @@
-import { Relevant, Input, TextArea, Select, Checkbox, Debug } from "informed";
+import { Relevant, Input, TextArea, Select, Debug } from "informed";
 import { LinkUrlInput } from "./LinkUrlInput.jsx";
 import { PhoneInput } from "./PhoneInput.jsx";
+import { ToggleButtonInput } from "./ToggleButtonInput.jsx";
 import { WIFI_ENCRYPTION_OPTIONS } from "../payloadTypes.js";
 import "./payload-fields.css";
 
@@ -116,7 +117,7 @@ export function PayloadFields() {
               placeholder="Network password"
             />
           </Relevant>
-          <Checkbox name="wifiHidden" label="Hidden network" />
+          <ToggleButtonInput name="wifiHidden" label="Hidden network" />
         </div>
       </Relevant>
 

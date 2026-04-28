@@ -106,8 +106,23 @@
   min-height: 0;
 }
 
+.style-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 2rem;
+  justify-content: flex-start;
+}
+
+.style-controls__color {
+  width: auto;
+}
+
 @media (max-width: 899px) {
   .panel--preview .qr-preview {
     align-items: center;
+  }
+
+  .style-controls {
+    align-items: flex-start;
   }
 }

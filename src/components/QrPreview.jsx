@@ -17,10 +17,11 @@ function buildQrStylingOptions({
   shapeStyleId,
   logoDataUrl,
   qrColor,
+  transparentBackground = false,
 }) {
   const preset = getShapeStyleOrDefault(shapeStyleId ?? "rounded");
   const fg = normalizeQrColor(qrColor);
-  const bg = "#ffffff";
+  const bg = transparentBackground ? "transparent" : "#ffffff";
   const hasLogo =
     typeof logoDataUrl === "string" && logoDataUrl.trim().length > 0;
 
@@ -71,6 +72,8 @@ export function QrPreview() {
   const shapeStyleId = values.shapeStyle;
   const logoDataUrl = values.logo;
   const qrColor = values.qrColor;
+  const downloadTransparentBackground =
+    values.downloadTransparentBackground === true;
 
   const containerRef = useRef(null);
   const qrRef = useRef(null);
@@ -120,6 +123,7 @@ export function QrPreview() {
         shapeStyleId,
         logoDataUrl,
         qrColor,
+        transparentBackground: downloadTransparentBackground,
       }),
     );
     void exportQr.download({ name: "qr-code", extension: "png" });

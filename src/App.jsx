@@ -5,6 +5,7 @@ import { LogoUploadInput } from "./components/LogoUploadInput.jsx";
 import { QrPreview } from "./components/QrPreview.jsx";
 import { ShareLinkButton } from "./components/ShareLinkButton.jsx";
 import { QrColorInput } from "./components/QrColorInput.jsx";
+import { ToggleButtonInput } from "./components/ToggleButtonInput.jsx";
 import { PayloadTypeInput } from "./components/PayloadTypeInput.jsx";
 import { PayloadFields } from "./components/PayloadFields.jsx";
 import { getFormInitialValuesFromSearch } from "./urlFormParams.js";
@@ -39,7 +40,17 @@ export default function App() {
             <PayloadTypeInput name="payloadType" label="Type" />
             <PayloadFields />
             <ShapeStyleInput name="shapeStyle" label="Shape style" />
-            <QrColorInput name="qrColor" label="QR color" />
+            <div className="style-controls">
+              <QrColorInput
+                name="qrColor"
+                label="QR color"
+                className="style-controls__color"
+              />
+              <ToggleButtonInput
+                name="downloadTransparentBackground"
+                label="Transparent"
+              />
+            </div>
             <LogoUploadInput name="logo" label="Center logo (optional)" />
           </section>
           <section className="panel panel--preview" aria-label="QR preview">

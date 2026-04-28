@@ -39,6 +39,7 @@ const DEFAULTS = {
   shapeStyle: "rounded",
   logo: "",
   qrColor: DEFAULT_QR_COLOR,
+  downloadTransparentBackground: false,
 };
 
 /**

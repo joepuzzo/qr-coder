@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { Form } from "informed";
 import { ShapeStyleInput } from "./components/ShapeStyleInput.jsx";
 import { LogoUploadInput } from "./components/LogoUploadInput.jsx";
@@ -12,7 +12,18 @@ import { AdSenseDisplay } from "./components/AdSenseDisplay.jsx";
 import { getFormInitialValuesFromSearch } from "./urlFormParams.js";
 import "./App.css";
 
+const AD_SUPPORT_DEFAULT =
+  "Yes, these ads pay for the free QR generator. You're welcome.";
+const AD_SUPPORT_BLOCKED =
+  "Normally we'd show ads here to keep the QR generator free… but your ad blocker won the round. Lucky you!";
+
 export default function App() {
+  const [adSupportVariant, setAdSupportVariant] = useState("default");
+
+  const onAdAvailabilityChange = useCallback((availability) => {
+    setAdSupportVariant(availability === "blocked" ? "blocked" : "default");
+  }, []);
+
   const initialValues = useMemo(
     () =>
       getFormInitialValuesFromSearch(
@@ -58,7 +69,15 @@ export default function App() {
           </section>
         </div>
         <section className="panel panel--ad" aria-label="Advertisement">
-          <AdSenseDisplay className="ad-slot" />
+          <p className="lede">
+            {adSupportVariant === "blocked"
+              ? AD_SUPPORT_BLOCKED
+              : AD_SUPPORT_DEFAULT}
+          </p>
+          <AdSenseDisplay
+            className="ad-slot"
+            onAvailabilityChange={onAdAvailabilityChange}
+          />
         </section>
       </div>
     </Form>

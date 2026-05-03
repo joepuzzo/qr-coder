@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useLayoutEffect } from "react";
 
 const AD_SCRIPT_SRC =
   "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
@@ -51,34 +51,134 @@ function ensureAdsByGoogleScript(clientId) {
   });
 }
 
+/**
+ * @typedef {"pending" | "serving" | "blocked"} AdSenseAvailability
+ * `blocked` = high confidence (loader script failed — typical when Brave / uBlock blocks the network).
+ * `serving` = we saw an iframe or Google’s “filled” status on the slot.
+ * `pending` = still trying or no fill yet (includes “under review” / no inventory — keep default copy).
+ */
+
+function watchInsForFill(ins, isCancelled, onServing) {
+  let finished = false;
+  /** @type {MutationObserver | null} */
+  let mo = null;
+  /** @type {ReturnType<typeof setInterval> | null} */
+  let iv = null;
+  /** @type {ReturnType<typeof setTimeout> | null} */
+  let to = null;
+
+  const stop = () => {
+    if (mo) mo.disconnect();
+    if (iv) clearInterval(iv);
+    if (to) clearTimeout(to);
+    mo = null;
+    iv = null;
+    to = null;
+  };
+
+  const finish = () => {
+    if (finished || isCancelled()) return;
+    finished = true;
+    onServing();
+    stop();
+  };
+
+  const isFilled = () => {
+    if (!ins.isConnected) return false;
+    if (ins.querySelector("iframe")) return true;
+    const st = ins.getAttribute("data-adsbygoogle-status");
+    if (st === "filled" || st === "done") return true;
+    return false;
+  };
+
+  if (isFilled()) {
+    if (!isCancelled()) {
+      finished = true;
+      onServing();
+    }
+    return () => {};
+  }
+
+  mo = new MutationObserver(() => {
+    if (!isCancelled() && isFilled()) finish();
+  });
+  mo.observe(ins, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["data-adsbygoogle-status"],
+  });
+
+  iv = setInterval(() => {
+    if (!isCancelled() && isFilled()) finish();
+  }, 400);
+
+  to = setTimeout(stop, 20000);
+
+  return () => {
+    stop();
+  };
+}
+
 export function AdSenseDisplay({
   className,
   adClient = "ca-pub-8470395062876076",
   adSlot = "6350778786",
+  /** @param {AdSenseAvailability} availability */
+  onAvailabilityChange,
 }) {
   const pushedRef = useRef(false);
+  const insRef = useRef(null);
+  const onAvailabilityChangeRef = useRef(onAvailabilityChange);
+
+  useLayoutEffect(() => {
+    onAvailabilityChangeRef.current = onAvailabilityChange;
+  });
 
   useEffect(() => {
     let cancelled = false;
+    const isCancelled = () => cancelled;
+    let stopWatching = () => {};
+
+    const emit = (/** @type {AdSenseAvailability} */ a) => {
+      onAvailabilityChangeRef.current?.(a);
+    };
+
+    emit("pending");
 
     (async () => {
       try {
         await ensureAdsByGoogleScript(adClient);
         if (cancelled || pushedRef.current) return;
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (pushErr) {
+          console.error(pushErr);
+          if (!cancelled) emit("blocked");
+          return;
+        }
         pushedRef.current = true;
         if (import.meta.env.DEV) {
           console.info(
             "[AdSense] push() ran for slot — on localhost Google often returns no ad (blank slot). Use your deployed URL or a hosts mapping to your approved domain to preview fills.",
           );
         }
+
+        const ins = insRef.current;
+        if (ins && !cancelled) {
+          stopWatching = watchInsForFill(ins, isCancelled, () => {
+            if (!cancelled) emit("serving");
+          });
+        }
       } catch (err) {
         console.error(err);
+        if (!cancelled) emit("blocked");
       }
     })();
 
     return () => {
       cancelled = true;
+      stopWatching();
     };
   }, [adClient]);
 
@@ -96,6 +196,7 @@ export function AdSenseDisplay({
       }
     >
       <ins
+        ref={insRef}
         className="adsbygoogle"
         style={{ display: "block" }}
         data-ad-client={adClient}

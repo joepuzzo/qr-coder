@@ -8,6 +8,7 @@ import { QrColorInput } from "./components/QrColorInput.jsx";
 import { ToggleButtonInput } from "./components/ToggleButtonInput.jsx";
 import { PayloadTypeInput } from "./components/PayloadTypeInput.jsx";
 import { PayloadFields } from "./components/PayloadFields.jsx";
+import { AdSenseDisplay } from "./components/AdSenseDisplay.jsx";
 import { getFormInitialValuesFromSearch } from "./urlFormParams.js";
 import "./App.css";
 
@@ -34,7 +35,6 @@ export default function App() {
             code.
           </p>
         </header>
-
         <div className="layout">
           <section className="panel" aria-label="QR settings">
             <PayloadTypeInput name="payloadType" label="Type" />
@@ -57,6 +57,9 @@ export default function App() {
             <QrPreview />
           </section>
         </div>
+        <section className="panel panel--ad" aria-label="Advertisement">
+          <AdSenseDisplay className="ad-slot" />
+        </section>
       </div>
     </Form>
   );

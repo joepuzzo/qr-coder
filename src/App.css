@@ -57,6 +57,33 @@
   color: var(--text-muted);
 }
 
+.ad-slot {
+  width: 100%;
+}
+
+.panel--ad {
+  width: 100%;
+  max-width: 65rem;
+}
+
+.panel--ad .ad-slot {
+  max-width: none;
+}
+
+/* AdSense often returns no fill on literal localhost — show slot bounds while developing */
+.ad-slot--local-preview {
+  min-height: 5.5rem;
+  padding: 0.75rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: 0.5rem;
+  background: var(--surface-hover);
+  box-sizing: border-box;
+}
+
+.ad-slot--local-preview .adsbygoogle {
+  min-height: 4rem;
+}
+
 .layout {
   display: grid;
   gap: clamp(1.25rem, 3vw, 2rem);
@@ -92,6 +119,12 @@
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .panel--ad {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
   }
 }
 

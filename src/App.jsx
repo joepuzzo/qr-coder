@@ -13,7 +13,8 @@ import { getFormInitialValuesFromSearch } from "./urlFormParams.js";
 import "./App.css";
 
 const AD_SUPPORT_DEFAULT =
-  "Yes, these ads pay for the free QR generator. You're welcome.";
+  "These ads help keep the QR Coder free to use. Thanks for the support!";
+// "Yes, these ads pay for the free QR generator. You're welcome.";
 const AD_SUPPORT_BLOCKED =
   "Normally we'd show ads here to keep the QR generator free… but your ad blocker won the round. Lucky you!";
 
